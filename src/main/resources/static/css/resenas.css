@@ -1,0 +1,256 @@
+/* ════════════════════════════════════════════════════════════
+   resenas.css  —  Estilos ESPECÍFICOS de la página de reseñas
+   Se carga ADEMÁS de global.css, nunca en lugar de él.
+
+   En resenas.html:
+     <link rel="stylesheet" href="/css/global.css"/>
+     <link rel="stylesheet" href="/resenas/resenas.css"/>
+   ════════════════════════════════════════════════════════════ */
+
+
+/* ──────────────────────────────────────────────────────────
+   ESTRELLAS DE CALIFICACIÓN
+   Sistema de 5 estrellas interactivo para el formulario.
+   Técnica: radio buttons ocultos + labels con ★
+   ────────────────────────────────────────────────────────── */
+.star-group {
+  display: flex;
+  flex-direction: row-reverse;   /* las estrellas se pintan de derecha a izq */
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+/* Oculta el input real, solo se ve el label ★ */
+.star-group input[type="radio"] {
+  display: none;
+}
+
+.star-group label {
+  font-size: 28px;
+  color: var(--border);          /* gris por defecto */
+  cursor: pointer;
+  transition: color .15s, transform .15s;
+  text-transform: none;          /* anula el uppercase de global.css */
+  letter-spacing: 0;
+  margin-bottom: 0;
+  width: auto;                   /* anula el width:100% de global.css */
+  padding: 0 2px;
+}
+
+/* Al hacer hover sobre una estrella, ella y todas las anteriores se pintan */
+.star-group label:hover,
+.star-group label:hover ~ label,
+.star-group input:checked ~ label {
+  color: var(--warning);         /* amarillo dorado */
+  transform: scale(1.15);
+}
+
+/* Texto auxiliar debajo de las estrellas */
+.star-hint {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+
+/* ──────────────────────────────────────────────────────────
+   TEXTAREA para el cuerpo de la reseña
+   ────────────────────────────────────────────────────────── */
+textarea {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 9px 12px;
+  outline: none;
+  resize: vertical;
+  min-height: 90px;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,229,160,.1);
+}
+
+textarea::placeholder { color: var(--muted); }
+
+
+/* ──────────────────────────────────────────────────────────
+   TARJETAS DE RESEÑA (vista en tabla / lista)
+   ────────────────────────────────────────────────────────── */
+
+/* Estrellas de solo lectura en la tabla */
+.stars-display {
+  display: inline-flex;
+  gap: 2px;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.star-filled  { color: var(--warning); }
+.star-empty   { color: var(--border); }
+
+/* Badge de verificado / no verificado */
+.badge-verificada {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-head);
+  letter-spacing: .4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.badge-verificada.si {
+  background: rgba(0,229,160,.1);
+  color: var(--accent);
+  border: 1px solid rgba(0,229,160,.2);
+}
+
+.badge-verificada.no {
+  background: rgba(107,115,133,.1);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+/* Badge de aprobada / pendiente */
+.badge-aprobada {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-head);
+  letter-spacing: .4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.badge-aprobada.si {
+  background: rgba(0,184,255,.1);
+  color: var(--accent2);
+  border: 1px solid rgba(0,184,255,.2);
+}
+
+.badge-aprobada.no {
+  background: rgba(255,77,109,.08);
+  color: var(--danger);
+  border: 1px solid rgba(255,77,109,.2);
+}
+
+/* Texto del cuerpo de la reseña en tabla: truncado con ellipsis */
+.resena-cuerpo {
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* Nombre de usuario / producto en la tabla */
+.ref-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ref-main { font-weight: 500; font-size: 13px; }
+.ref-sub  { font-size: 11px; color: var(--muted); }
+
+
+/* ──────────────────────────────────────────────────────────
+   TOGGLE SWITCHES  (verificada / aprobada en el formulario)
+   ────────────────────────────────────────────────────────── */
+.toggle-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color .2s;
+}
+
+.toggle-group:hover { border-color: var(--accent); }
+
+.toggle-label-text {
+  font-size: 12px;
+  color: var(--text);
+}
+
+.toggle-label-sub {
+  font-size: 11px;
+  color: var(--muted);
+  display: block;
+  margin-top: 2px;
+}
+
+/* El switch visual */
+.toggle-switch {
+  width: 38px;
+  height: 20px;
+  background: var(--border);
+  border-radius: 999px;
+  position: relative;
+  transition: background .2s;
+  flex-shrink: 0;
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  transition: left .2s;
+}
+
+/* Estado ON */
+.toggle-group.on .toggle-switch {
+  background: var(--accent);
+}
+
+.toggle-group.on .toggle-switch::after {
+  left: 21px;
+}
+
+
+/* ──────────────────────────────────────────────────────────
+   CALIFICACIÓN PROMEDIO (si quieres mostrarla en el header)
+   ────────────────────────────────────────────────────────── */
+.avg-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 16px;
+}
+
+.avg-number {
+  font-family: var(--font-head);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--warning);
+  line-height: 1;
+}
+
+.avg-stars { font-size: 14px; }
+.avg-total { font-size: 11px; color: var(--muted); }

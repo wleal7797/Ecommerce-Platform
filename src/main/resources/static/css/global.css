@@ -1,0 +1,485 @@
+/* ════════════════════════════════════════════════════════════
+   global.css  —  Estilos compartidos para TODO el proyecto
+   Importar en cada HTML así:
+     <link rel="stylesheet" href="../css/global.css"/>
+   ════════════════════════════════════════════════════════════ */
+
+/* ──────────────────────────────────────────────────────────
+   1. VARIABLES DE DISEÑO
+   Cambia aquí los colores y se actualizan en toda la app.
+   ────────────────────────────────────────────────────────── */
+:root {
+  /* Fondos */
+  --bg:        #0b0e13;
+  --surface:   #13171f;
+  --card:      #1a1f2b;
+  --border:    #262d3d;
+
+  /* Colores de acento */
+  --accent:    #00e5a0;   /* verde — acciones principales */
+  --accent2:   #00b8ff;   /* azul  — modo edición         */
+  --danger:    #ff4d6d;   /* rojo  — eliminar / error      */
+  --warning:   #ffd166;   /* amarillo — advertencias       */
+
+  /* Texto */
+  --text:      #e8eaf0;
+  --muted:     #6b7385;
+
+  /* Misc */
+  --radius:    10px;
+  --font-head: 'Syne', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+}
+
+/* ──────────────────────────────────────────────────────────
+   2. RESET BÁSICO
+   ────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Fondo decorativo con gradientes — aparece en todas las páginas */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 80% 10%, rgba(0,229,160,.07) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 10% 90%, rgba(0,184,255,.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ──────────────────────────────────────────────────────────
+   3. LAYOUT PRINCIPAL
+   ────────────────────────────────────────────────────────── */
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+/* ──────────────────────────────────────────────────────────
+   4. HEADER DE PÁGINA
+   ────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.header-left h1 {
+  font-family: var(--font-head);
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+/* El <span> dentro del h1 se pinta con el acento verde */
+.header-left h1 span { color: var(--accent); }
+
+.header-left p {
+  color: var(--muted);
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+/* Pastilla con el conteo de registros */
+.badge-count {
+  background: var(--accent);
+  color: #000;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+/* ──────────────────────────────────────────────────────────
+   5. GRID DE DOS COLUMNAS (formulario | tabla)
+   ────────────────────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* En móvil pasa a una sola columna */
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+}
+
+/* ──────────────────────────────────────────────────────────
+   6. CARD (caja con borde)
+   ────────────────────────────────────────────────────────── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+}
+
+.card-title {
+  font-family: var(--font-head);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Puntito de color al lado del título */
+.card-title .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  flex-shrink: 0;
+}
+
+/* Variante azul — se activa con JS al entrar en modo editar */
+.dot-edit {
+  background: var(--accent2) !important;
+  box-shadow: 0 0 8px var(--accent2) !important;
+}
+
+/* ──────────────────────────────────────────────────────────
+   7. FORMULARIO
+   ────────────────────────────────────────────────────────── */
+.form-group { margin-bottom: 14px; }
+
+label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  margin-bottom: 6px;
+}
+
+input, select {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+input:focus, select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,229,160,.1);
+}
+
+input::placeholder { color: var(--muted); }
+select option      { background: var(--card); }
+
+/* Dos campos en la misma fila */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* ──────────────────────────────────────────────────────────
+   8. BOTONES
+   ────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-head);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  padding: 9px 18px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all .18s;
+}
+
+/* Verde — acción principal (crear / guardar) */
+.btn-primary {
+  background: var(--accent);
+  color: #000;
+  width: 100%;
+  justify-content: center;
+  margin-top: 6px;
+  font-size: 14px;
+  padding: 11px;
+}
+.btn-primary:hover {
+  background: #00ffb3;
+  box-shadow: 0 0 20px rgba(0,229,160,.3);
+}
+
+/* Gris — acción secundaria (cancelar) */
+.btn-secondary {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  width: 100%;
+  justify-content: center;
+  margin-top: 6px;
+  font-size: 13px;
+  padding: 8px;
+}
+.btn-secondary:hover { border-color: var(--muted); color: var(--text); }
+
+/* Azul — editar fila de tabla */
+.btn-edit {
+  background: rgba(0,184,255,.12);
+  color: var(--accent2);
+  border: 1px solid rgba(0,184,255,.25);
+  padding: 6px 12px;
+  font-size: 12px;
+}
+.btn-edit:hover { background: rgba(0,184,255,.22); }
+
+/* Rojo — eliminar fila de tabla */
+.btn-delete {
+  background: rgba(255,77,109,.1);
+  color: var(--danger);
+  border: 1px solid rgba(255,77,109,.2);
+  padding: 6px 12px;
+  font-size: 12px;
+}
+.btn-delete:hover { background: rgba(255,77,109,.2); }
+
+/* ──────────────────────────────────────────────────────────
+   9. TABLA
+   ────────────────────────────────────────────────────────── */
+.table-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+thead th {
+  font-family: var(--font-head);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  color: var(--muted);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+tbody tr {
+  border-bottom: 1px solid rgba(38,45,61,.6);
+  transition: background .15s;
+}
+tbody tr:hover { background: rgba(255,255,255,.025); }
+
+tbody td {
+  padding: 11px 14px;
+  vertical-align: middle;
+  color: var(--text);
+}
+
+.td-actions { display: flex; gap: 6px; flex-wrap: nowrap; }
+
+/* ──────────────────────────────────────────────────────────
+   10. BADGES DE ROL  (usado en tabla de usuarios)
+   ────────────────────────────────────────────────────────── */
+.role-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-head);
+  letter-spacing: .5px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+.role-ADMIN    { background: rgba(255,209,102,.15); color: var(--warning); border: 1px solid rgba(255,209,102,.3); }
+.role-VENDEDOR { background: rgba(0,184,255,.12);   color: var(--accent2); border: 1px solid rgba(0,184,255,.25); }
+.role-CLIENTE  { background: rgba(0,229,160,.1);    color: var(--accent);  border: 1px solid rgba(0,229,160,.2); }
+
+/* ──────────────────────────────────────────────────────────
+   11. INDICADOR DE ESTADO (activo / inactivo)
+   ────────────────────────────────────────────────────────── */
+.status-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+}
+.status-dot::before {
+  content: '';
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+}
+.status-on::before  { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+.status-off::before { background: var(--danger); }
+
+/* ──────────────────────────────────────────────────────────
+   12. AVATAR (círculo con iniciales)
+   ────────────────────────────────────────────────────────── */
+.avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 12px;
+  color: #000;
+  flex-shrink: 0;
+}
+
+.name-cell  { display: flex; align-items: center; gap: 10px; }
+.name-info  { display: flex; flex-direction: column; }
+.name-main  { font-weight: 500; }
+.name-sub   { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+/* ──────────────────────────────────────────────────────────
+   13. TOAST / NOTIFICACIÓN FLOTANTE
+   ────────────────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 20px;
+  font-family: var(--font-head);
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 9999;
+  /* Empieza invisible abajo */
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all .3s cubic-bezier(.34,1.56,.64,1);
+  min-width: 240px;
+}
+/* Clase que activa la animación de entrada */
+.toast.show    { transform: translateY(0); opacity: 1; }
+.toast.success { border-left: 3px solid var(--accent); }
+.toast.error   { border-left: 3px solid var(--danger); }
+.toast.warning { border-left: 3px solid var(--warning); }
+
+/* ──────────────────────────────────────────────────────────
+   14. ESTADO VACÍO DE TABLA
+   ────────────────────────────────────────────────────────── */
+.empty-state {
+  text-align: center;
+  padding: 50px 20px;
+  color: var(--muted);
+}
+.empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+.empty-state p     { font-family: var(--font-head); font-size: 15px; }
+.empty-state small { font-size: 12px; margin-top: 4px; display: block; }
+
+.loading-row td {
+  text-align: center;
+  color: var(--muted);
+  padding: 30px !important;
+  font-style: italic;
+}
+
+/* ──────────────────────────────────────────────────────────
+   15. MODAL DE CONFIRMACIÓN
+   ────────────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.7);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  max-width: 380px;
+  width: 90%;
+  transform: scale(.92);
+  transition: transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.modal-overlay.open .modal { transform: scale(1); }
+
+.modal h3 {
+  font-family: var(--font-head);
+  font-size: 1.15rem;
+  margin-bottom: 10px;
+}
+.modal p { color: var(--muted); font-size: 13px; line-height: 1.6; }
+
+.modal-actions { display: flex; gap: 10px; margin-top: 24px; }
+
+.btn-confirm-del {
+  flex: 1;
+  background: var(--danger);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  font-family: var(--font-head);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-confirm-del:hover { background: #ff2d4d; }
+
+.btn-cancel-del {
+  flex: 1;
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px;
+  font-family: var(--font-head);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-cancel-del:hover { border-color: var(--muted); color: var(--text); }
