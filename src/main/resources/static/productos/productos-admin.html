@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Productos — Panel Admin</title>
+  <link rel="stylesheet" href="/css/global.css"/>
+  <link rel="stylesheet" href="/css/productos-admin.css"/>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── HEADER ──────────────────────────────────────────────────────────── -->
+  <header class="page-header">
+    <div class="page-header-left">
+      <h1>Gestión de <em>Productos</em></h1>
+      <p>Panel de administración · CRUD completo de catálogo</p>
+    </div>
+    <div class="header-meta">
+      <span class="badge-total" id="totalBadge">0 productos</span>
+    </div>
+  </header>
+
+  <!-- ── STATS ──────────────────────────────────────────────────────────── -->
+  <div class="stats-row" id="statsRow">
+    <div class="stat-card">
+      <div class="stat-label">Total productos</div>
+      <div class="stat-value" id="statTotal">—</div>
+      <div class="stat-sub">en el catálogo</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Activos</div>
+      <div class="stat-value" id="statActivos">—</div>
+      <div class="stat-sub">visibles al cliente</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Sin stock</div>
+      <div class="stat-value" id="statSinStock">—</div>
+      <div class="stat-sub">stock = 0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Destacados</div>
+      <div class="stat-value" id="statDestacados">—</div>
+      <div class="stat-sub">en vitrina</div>
+    </div>
+  </div>
+
+  <!-- ── MAIN GRID ───────────────────────────────────────────────────────── -->
+  <div class="main-grid">
+
+    <!-- FORMULARIO -->
+    <aside>
+      <div class="card">
+        <div class="card-header">
+          <span class="dot" id="formDot"></span>
+          <span class="card-title" id="formTitle">Nuevo Producto</span>
+        </div>
+
+        <input type="hidden" id="idProducto"/>
+
+        <div class="form-grid">
+
+          <div class="form-group full">
+            <label>Nombre *</label>
+            <input type="text" id="nombre" placeholder="Ej: Camiseta Premium Algodón"/>
+          </div>
+
+          <div class="form-group full">
+            <label>Slug (URL)</label>
+            <input type="text" id="slug" placeholder="camiseta-premium-algodon"/>
+          </div>
+
+          <div class="form-group">
+            <label>SKU *</label>
+            <input type="text" id="sku" placeholder="CAM-001"/>
+          </div>
+
+          <div class="form-group">
+            <label>Código de barras</label>
+            <input type="text" id="codigoBarras" placeholder="7700000000000"/>
+          </div>
+
+          <div class="form-group">
+            <label>Precio *</label>
+            <input type="number" id="precio" placeholder="0.00" step="0.01" min="0"/>
+          </div>
+
+          <div class="form-group">
+            <label>Precio oferta</label>
+            <input type="number" id="precioOferta" placeholder="0.00" step="0.01" min="0"/>
+          </div>
+
+          <div class="form-group">
+            <label>Stock *</label>
+            <input type="number" id="stock" placeholder="0" min="0"/>
+          </div>
+
+          <div class="form-group">
+            <label>Stock mínimo</label>
+            <input type="number" id="stockMinimo" placeholder="5" min="0"/>
+          </div>
+
+          <div class="form-group full">
+            <label>Descripción corta</label>
+            <input type="text" id="descripcionCorta" placeholder="Resumen de 1-2 líneas del producto"/>
+          </div>
+
+          <div class="form-group full">
+            <label>Descripción completa</label>
+            <textarea id="descripcion" placeholder="Descripción detallada del producto…"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Peso (kg)</label>
+            <input type="number" id="pesoKg" placeholder="0.000" step="0.001" min="0"/>
+          </div>
+
+          <div class="form-group">
+            <label>Alto (cm)</label>
+            <input type="number" id="altoCm" placeholder="0.00" step="0.01" min="0"/>
+          </div>
+
+          <div class="form-group">
+            <label>Ancho (cm)</label>
+            <input type="number" id="anchoCm" placeholder="0.00" step="0.01" min="0"/>
+          </div>
+
+          <div class="form-group">
+            <label>Largo (cm)</label>
+            <input type="number" id="largoCm" placeholder="0.00" step="0.01" min="0"/>
+          </div>
+
+          <div class="form-group full">
+            <label>Meta título (SEO)</label>
+            <input type="text" id="metaTitulo" placeholder="Título para buscadores (máx 160 chars)" maxlength="160"/>
+          </div>
+
+          <div class="form-group full">
+            <label>Meta descripción (SEO)</label>
+            <input type="text" id="metaDescripcion" placeholder="Descripción para buscadores (máx 320 chars)" maxlength="320"/>
+          </div>
+
+        </div><!-- /form-grid -->
+
+        <!-- Toggles -->
+        <div style="margin-top:1.25rem; border:1px solid var(--c-border); border-radius:var(--radius-lg); padding:.75rem 1rem;">
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span>Producto activo</span>
+              <small>Visible en la vitrina para clientes</small>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="activo" checked/>
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span>Destacado</span>
+              <small>Aparece en la sección de destacados</small>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="destacado"/>
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span>Permite reseñas</span>
+              <small>Los clientes pueden dejar opiniones</small>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="permiteResenas" checked/>
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="guardar()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <span id="btnText">Crear Producto</span>
+          </button>
+          <button class="btn btn-secondary" id="btnCancelar" onclick="cancelarEdicion()" style="display:none">
+            ✕ Cancelar
+          </button>
+        </div>
+
+      </div><!-- /card -->
+    </aside>
+
+    <!-- TABLA -->
+    <section>
+      <div class="card">
+        <div class="card-header">
+          <span class="dot dot green"></span>
+          <span class="card-title">Catálogo de productos</span>
+        </div>
+
+        <div class="table-toolbar">
+          <div class="search-wrap">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input class="search-input" id="searchInput" type="text" placeholder="Buscar por nombre o SKU…" oninput="filtrarTabla()"/>
+          </div>
+          <select id="filtroActivo" onchange="filtrarTabla()"
+                  style="padding:8px 12px;border:1px solid var(--c-border);border-radius:var(--radius-md);font-family:var(--font-body);font-size:13.5px;background:var(--c-surface);color:var(--c-ink);outline:none;">
+            <option value="">Todos</option>
+            <option value="1">Activos</option>
+            <option value="0">Inactivos</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>SKU</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Estado</th>
+              <th>Flags</th>
+              <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody id="tablaBody">
+            <tr>
+              <td colspan="8" style="padding:2rem;text-align:center;color:var(--c-ink-muted);">Cargando…</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="empty-state" id="emptyState" style="display:none">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <p>Sin productos aún</p>
+          <small>Crea el primero con el formulario</small>
+        </div>
+
+      </div><!-- /card -->
+    </section>
+
+  </div><!-- /main-grid -->
+</div><!-- /app -->
+
+<!-- Modal eliminar -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <h3>Eliminar producto</h3>
+    <p>Esta acción es <strong>irreversible</strong>. ¿Deseas eliminar este producto del catálogo?</p>
+    <div class="modal-actions">
+      <button class="btn-cancel-del" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn-confirm-del" onclick="confirmarEliminar()">Sí, eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast"></div>
+
+<script src="/js/utils.js"></script>
+<script src="/js/productos-admin.js"></script>
+</body>
+</html>

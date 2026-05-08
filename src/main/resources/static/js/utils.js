@@ -1,199 +1,66 @@
-/* ════════════════════════════════════════════════════════════
-   utils.js  —  Funciones compartidas para TODO el proyecto
-   Importar en cada HTML así (ANTES del JS específico de cada página):
-     <script src="../js/utils.js"></script>
-   ════════════════════════════════════════════════════════════ */
+/* ─── utils.js ──────────────────────────────────────────────────────────────── */
 
-
-/* ──────────────────────────────────────────────────────────
-   TOAST — Notificación flotante temporal
-   Uso: mostrarToast('Guardado con éxito', 'success')
-        mostrarToast('Algo salió mal',      'error')
-        mostrarToast('Campos incompletos',  'warning')
-   ────────────────────────────────────────────────────────── */
-let _toastTimer;
-
-function mostrarToast(mensaje, tipo = 'success') {
-  const t = document.getElementById('toast');
-  if (!t) return;                          // Protección: el div debe existir
-  t.textContent = mensaje;
-  t.className   = `toast ${tipo} show`;   // Activa la animación CSS
-  clearTimeout(_toastTimer);
-  // Oculta automáticamente a los 3.2 segundos
-  _toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
-}
-
-
-/* ──────────────────────────────────────────────────────────
-   MODAL DE CONFIRMACIÓN DE BORRADO
-   Uso:
-     abrirModal(id)       → abre el modal y guarda el ID
-     cerrarModal()        → cierra el modal
-     confirmarEliminar()  → ejecuta el callback registrado
-   ────────────────────────────────────────────────────────── */
-let _idParaEliminar  = null;
-let _callbackEliminar = null;   // Función que ejecuta el DELETE real
-
-/**
- * Abre el modal y registra qué ID borrar y qué función llamar.
- * @param {number|string} id         - ID del registro a eliminar
- * @param {Function}      callback   - función async que hace el DELETE
+/** Muestra un toast flotante
+ * @param {string} msg
+ * @param {'ok'|'warn'|'error'} type
+ * @param {number} duration  ms
  */
-function abrirModal(id, callback) {
-  _idParaEliminar   = id;
-  _callbackEliminar = callback;
-  document.getElementById('modalOverlay').classList.add('open');
-}
+function showToast(msg, type = 'ok', duration = 3200) {
+  const container = document.getElementById('toast');
+  if (!container) return;
 
-function cerrarModal() {
-  _idParaEliminar   = null;
-  _callbackEliminar = null;
-  document.getElementById('modalOverlay').classList.remove('open');
-}
+  const el = document.createElement('div');
+  el.className = `toast-item ${type}`;
+  el.textContent = msg;
+  container.appendChild(el);
 
-async function confirmarEliminar() {
-  cerrarModal();
-  if (typeof _callbackEliminar === 'function') {
-    await _callbackEliminar(_idParaEliminar);
-  }
-}
-
-// Cerrar modal al hacer click fuera de la caja
-document.addEventListener('DOMContentLoaded', () => {
-  const overlay = document.getElementById('modalOverlay');
-  if (overlay) {
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) cerrarModal();
-    });
-  }
-});
-
-
-/* ──────────────────────────────────────────────────────────
-   ESCAPE DE HTML — Previene XSS al insertar texto del servidor
-   Uso: esc(usuario.nombre)
-   ────────────────────────────────────────────────────────── */
-function esc(str) {
-  return String(str ?? '')
-    .replace(/&/g,  '&amp;')
-    .replace(/</g,  '&lt;')
-    .replace(/>/g,  '&gt;')
-    .replace(/"/g,  '&quot;');
-}
-
-
-/* ──────────────────────────────────────────────────────────
-   INICIALES DE AVATAR
-   Uso: iniciales('Juan', 'Pérez')  →  'JP'
-   ────────────────────────────────────────────────────────── */
-function iniciales(...palabras) {
-  return palabras
-    .map(p => p?.[0] ?? '')
-    .join('')
-    .toUpperCase() || '?';
-}
-
-
-/* ──────────────────────────────────────────────────────────
-   ACTUALIZAR BADGE DE CONTEO
-   Uso: actualizarBadge(usuarios.length)
-   ────────────────────────────────────────────────────────── */
-function actualizarBadge(total) {
-  const badge = document.getElementById('totalBadge');
-  if (badge) {
-    badge.textContent = `${total} registro${total !== 1 ? 's' : ''}`;
-  }
-}
-
-
-/* ──────────────────────────────────────────────────────────
-   MOSTRAR / OCULTAR ESTADO VACÍO
-   Uso: toggleEmpty(lista.length === 0)
-   ────────────────────────────────────────────────────────── */
-function toggleEmpty(estaVacio) {
-  const empty = document.getElementById('emptyState');
-  if (empty) empty.style.display = estaVacio ? 'block' : 'none';
-}
-
-
-/* ──────────────────────────────────────────────────────────
-   MODO FORMULARIO — alterna entre "Crear" y "Editar"
-   Cada página llama estas funciones pasando sus propios textos.
-
-   Uso (en usuarios.js):
-     activarModoEdicion('Editar Usuario', 'Guardar cambios')
-     desactivarModoEdicion('Nuevo Usuario', 'Crear Usuario')
-   ────────────────────────────────────────────────────────── */
-function activarModoEdicion(tituloForm, textoBtnGuardar) {
-  document.getElementById('formTitle').textContent  = tituloForm;
-  document.getElementById('btnText').textContent    = textoBtnGuardar;
-  document.getElementById('btnIcon').textContent    = '✎';
-  document.getElementById('btnCancelar').style.display = 'block';
-  document.getElementById('formDot').classList.add('dot-edit');
-  // Scroll suave al formulario (útil en móvil)
-  document.querySelector('.card')?.scrollIntoView({ behavior: 'smooth' });
-}
-
-function desactivarModoEdicion(tituloForm, textoBtnGuardar) {
-  const idInput = document.getElementById('idUsuario')  // intenta usuario
-              ?? document.getElementById('idRegistro'); // fallback genérico
-  if (idInput) idInput.value = '';
-
-  document.getElementById('formTitle').textContent  = tituloForm;
-  document.getElementById('btnText').textContent    = textoBtnGuardar;
-  document.getElementById('btnIcon').textContent    = '＋';
-  document.getElementById('btnCancelar').style.display = 'none';
-  document.getElementById('formDot').classList.remove('dot-edit');
-}
-
-
-/* ──────────────────────────────────────────────────────────
-   FETCH HELPERS — Wrappers sobre fetch() con manejo de errores
-   Evitan repetir headers y try/catch en cada página.
-   ────────────────────────────────────────────────────────── */
-
-/**
- * GET  →  retorna el JSON o lanza un Error
- */
-async function apiGet(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`GET ${url} → HTTP ${res.status}`);
-  return res.json();
-}
-
-/**
- * POST  →  envía JSON, retorna el objeto creado
- */
-async function apiPost(url, datos) {
-  const res = await fetch(url, {
-    method:  'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body:    JSON.stringify(datos)
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => el.classList.add('show'));
   });
-  if (!res.ok) throw new Error(`POST ${url} → HTTP ${res.status}`);
-  return res.json();
+
+  setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(() => el.remove(), 300);
+  }, duration);
 }
 
-/**
- * PUT  →  envía JSON, retorna el objeto actualizado
- */
-async function apiPut(url, datos) {
-  const res = await fetch(url, {
-    method:  'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body:    JSON.stringify(datos)
+/** Formatea un número como moneda COP/USD */
+function formatPrecio(valor) {
+  if (valor == null) return '—';
+  return new Intl.NumberFormat('es-CO', {
+    style   : 'currency',
+    currency: 'COP',
+    maximumFractionDigits: 0,
+  }).format(valor);
+}
+
+/** Genera estrellas ASCII a partir de un número (0-5) */
+function starsFromRating(rating, total = 5) {
+  const full  = Math.round(rating ?? 0);
+  const empty = total - full;
+  return '★'.repeat(full) + '☆'.repeat(empty);
+}
+
+/** Iniciales de un nombre (máx 2 chars) */
+function initials(nombre) {
+  if (!nombre) return '?';
+  return nombre.trim().split(/\s+/).map(w => w[0].toUpperCase()).slice(0, 2).join('');
+}
+
+/** Genera slug desde un string */
+function toSlug(str) {
+  return str
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+}
+
+/** Formatea fecha ISO a "dd MMM yyyy" en español */
+function formatFecha(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString('es-CO', {
+    day: 'numeric', month: 'short', year: 'numeric'
   });
-  if (!res.ok) throw new Error(`PUT ${url} → HTTP ${res.status}`);
-  return res.json();
-}
-
-/**
- * DELETE  →  retorna true si fue exitoso (204 o 200)
- */
-async function apiDelete(url) {
-  const res = await fetch(url, { method: 'DELETE' });
-  if (!res.ok && res.status !== 204) {
-    throw new Error(`DELETE ${url} → HTTP ${res.status}`);
-  }
-  return true;
 }

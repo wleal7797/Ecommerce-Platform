@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tienda — Catálogo de Productos</title>
+  <link rel="stylesheet" href="/css/global.css"/>
+  <link rel="stylesheet" href="/css/productos-cliente.css"/>
+</head>
+<body>
+
+<!-- ── NAVBAR ─────────────────────────────────────────────────────────────── -->
+<nav class="navbar">
+  <a class="nav-brand" href="/">Mi<em>Tienda</em></a>
+  <ul class="nav-links">
+    <li><a href="/">Inicio</a></li>
+    <li><a href="/productos-cliente.html" style="color:var(--c-ink);font-weight:500;">Catálogo</a></li>
+    <li><a href="#">Ofertas</a></li>
+    <li><a href="#">Contacto</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="icon-btn" title="Buscar" onclick="document.getElementById('filtroNombre').focus()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <button class="icon-btn cart-btn" title="Carrito" id="cartBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ── HERO ───────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Colección 2025</div>
+    <h1>Todo lo que<br/>necesitas, <em>aquí.</em></h1>
+    <p>Descubre nuestro catálogo cuidadosamente seleccionado. Calidad garantizada, entregas rápidas, devoluciones sin preguntas.</p>
+    <div class="hero-actions">
+      <a href="#catalogo" class="btn-hero-primary">
+        Ver catálogo
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="#" class="btn-hero-secondary">Ver ofertas</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-visual-inner">
+      <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      <span>Imagen destacada del producto</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── CATÁLOGO ────────────────────────────────────────────────────────────── -->
+<main class="section" id="catalogo">
+  <div class="section-header">
+    <h2>Nuestros <em>productos</em></h2>
+    <div class="filter-bar">
+      <input class="filter-search" id="filtroNombre" type="text"
+             placeholder="Buscar producto…" oninput="filtrarProductos()"/>
+      <button class="filter-btn active" id="filtroTodos" onclick="setFiltro('todos')">Todos</button>
+      <button class="filter-btn" id="filtroDestacados" onclick="setFiltro('destacados')">Destacados</button>
+      <button class="filter-btn" id="filtroOfertas" onclick="setFiltro('ofertas')">En oferta</button>
+    </div>
+  </div>
+
+  <div class="products-grid" id="productsGrid">
+    <!-- productos se renderizan por JS -->
+    <div style="grid-column:1/-1;padding:3rem;text-align:center;color:var(--c-ink-muted);">
+      Cargando catálogo…
+    </div>
+  </div>
+
+  <div class="empty-state" id="emptyState" style="display:none">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    <p>No hay productos disponibles</p>
+    <small>Vuelve pronto, estamos actualizando el catálogo</small>
+  </div>
+</main>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────────────────── -->
+<footer class="footer">
+  <p>© 2025 Mi<em>Tienda</em> · Todos los derechos reservados</p>
+</footer>
+
+<!-- ── PANEL RESEÑAS (slide-in) ───────────────────────────────────────────── -->
+<div class="reviews-overlay" id="reviewsOverlay" onclick="cerrarReseñas()"></div>
+
+<aside class="reviews-panel" id="reviewsPanel" role="dialog" aria-modal="true" aria-label="Reseñas del producto">
+  <div class="rp-header">
+    <div class="rp-header-info">
+      <h3 id="rpProductName">Reseñas</h3>
+      <p id="rpProductSub">Opiniones de compradores</p>
+    </div>
+    <button class="rp-close" onclick="cerrarReseñas()" aria-label="Cerrar panel">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <div class="rp-tabs">
+    <button class="rp-tab active" id="tabLeer"     onclick="switchRpTab('leer')">Leer reseñas</button>
+    <button class="rp-tab"        id="tabEscribir" onclick="switchRpTab('escribir')">Escribir reseña</button>
+  </div>
+
+  <div class="rp-body" id="rpBody">
+
+    <!-- TAB: Leer -->
+    <div id="rpLeer">
+      <div class="rp-summary" id="rpSummary">
+        <div class="rp-avg">
+          <span class="rp-avg-num" id="rpAvgNum">—</span>
+          <div class="rp-avg-detail">
+            <div class="rp-stars-big" id="rpAvgStars">☆☆☆☆☆</div>
+            <div class="rp-total-label" id="rpTotalLabel">0 reseñas</div>
+          </div>
+        </div>
+        <div id="rpDistrib"></div>
+      </div>
+      <div id="rpListado">
+        <p style="font-size:13px;color:var(--c-ink-muted);">Cargando reseñas…</p>
+      </div>
+    </div>
+
+    <!-- TAB: Escribir -->
+    <div id="rpEscribir" style="display:none">
+      <div id="rpFormWrap">
+        <div class="rp-field">
+          <label>Tu calificación *</label>
+          <div class="star-picker">
+            <input type="radio" name="rpStar" id="rpS5" value="5"><label for="rpS5">★</label>
+            <input type="radio" name="rpStar" id="rpS4" value="4"><label for="rpS4">★</label>
+            <input type="radio" name="rpStar" id="rpS3" value="3"><label for="rpS3">★</label>
+            <input type="radio" name="rpStar" id="rpS2" value="2"><label for="rpS2">★</label>
+            <input type="radio" name="rpStar" id="rpS1" value="1"><label for="rpS1">★</label>
+          </div>
+        </div>
+        <div class="rp-field">
+          <label>Tu nombre *</label>
+          <input type="text" id="rpNombre" placeholder="Nombre o apodo"/>
+        </div>
+        <div class="rp-field">
+          <label>Título de la reseña *</label>
+          <input type="text" id="rpTitulo" placeholder="Ej: Excelente calidad"/>
+        </div>
+        <div class="rp-field">
+          <label>Tu comentario</label>
+          <textarea id="rpCuerpo" placeholder="Cuéntanos tu experiencia…"></textarea>
+        </div>
+        <button class="btn-submit-review" onclick="enviarResena()">Publicar reseña</button>
+      </div>
+      <div class="review-success" id="rpSuccess" style="display:none">
+        <div class="icon-ok">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <p>¡Reseña publicada!</p>
+        <small>Gracias por compartir tu opinión con la comunidad.</small>
+      </div>
+    </div>
+
+  </div><!-- /rp-body -->
+</aside>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script src="/js/utils.js"></script>
+<script src="/js/productos-cliente.js"></script>
+</body>
+</html>
