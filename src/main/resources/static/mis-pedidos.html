@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mis Pedidos</title>
+  <link rel="stylesheet" href="/css/global.css"/>
+  <link rel="stylesheet" href="/css/admin-shared.css"/>
+  <style>
+    /* Overrides para la vista cliente */
+    .app { max-width: 900px; }
+    .timeline { position: relative; }
+    .tl-item {
+      display: flex; gap: 14px; margin-bottom: 1.5rem; position: relative;
+    }
+    .tl-dot {
+      width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+      border: 2px solid var(--c-border); background: var(--c-paper);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--c-ink-muted); position: relative; z-index: 1;
+    }
+    .tl-dot.active { border-color: var(--c-ok); background: var(--c-ok-lt); color: var(--c-ok); }
+    .tl-dot.current { border-color: var(--c-ink); background: var(--c-ink); color: var(--c-paper); }
+    .tl-line {
+      position: absolute; left: 16px; top: 34px; bottom: -1.5rem;
+      width: 2px; background: var(--c-border); z-index: 0;
+    }
+    .tl-item:last-child .tl-line { display: none; }
+    .tl-content { padding-top: 6px; flex: 1; }
+    .tl-label { font-size: 13.5px; font-weight: 500; }
+    .tl-date  { font-size: 12px; color: var(--c-ink-muted); margin-top: 1px; }
+
+    .pedido-card {
+      background: var(--c-paper); border: 1px solid var(--c-border);
+      border-radius: var(--radius-xl); margin-bottom: 1.25rem; overflow: hidden;
+    }
+    .pc-header {
+      display: flex; align-items: center; gap: 12px; padding: 1.1rem 1.5rem;
+      cursor: pointer; transition: background var(--transition);
+    }
+    .pc-header:hover { background: var(--c-surface); }
+    .pc-num  { font-family: var(--font-mono); font-size: 13px; font-weight: 500; }
+    .pc-date { font-size: 12px; color: var(--c-ink-muted); }
+    .pc-total{ font-family: var(--font-display); font-size: 1.1rem; margin-left: auto; }
+    .pc-body { padding: 1.25rem 1.5rem; border-top: 1px solid var(--c-border); display: none; }
+    .pc-body.open { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav style="position:sticky;top:0;z-index:100;background:rgba(250,249,246,.92);
+     backdrop-filter:blur(12px);border-bottom:1px solid var(--c-border);
+     padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;">
+  <a href="/productos-cliente.html"
+     style="font-family:var(--font-display);font-size:1.2rem;color:var(--c-ink);text-decoration:none;">
+    Mi<em style="font-style:italic;color:var(--c-accent);">Tienda</em>
+  </a>
+  <a href="/productos-cliente.html"
+     style="font-size:13px;color:var(--c-ink-muted);text-decoration:none;display:flex;align-items:center;gap:5px;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    Volver a la tienda
+  </a>
+</nav>
+
+<div class="app" style="padding-top:2.5rem;">
+
+  <header class="page-header">
+    <div>
+      <h1>Mis <em>Pedidos</em></h1>
+      <p>Historial completo de tus órdenes</p>
+    </div>
+    <span style="font-family:var(--font-mono);font-size:12px;padding:5px 12px;
+           background:var(--c-surface);border:1px solid var(--c-border);border-radius:99px;"
+          id="totalBadge">0 pedidos</span>
+  </header>
+
+  <!-- LISTADO DE PEDIDOS -->
+  <div id="listaPedidos">
+    <p style="color:var(--c-ink-muted);font-size:14px;">Cargando pedidos…</p>
+  </div>
+
+  <div class="empty-state" id="emptyState" style="display:none">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
+    <p>Aún no tienes pedidos</p>
+    <small>¡Empieza a explorar el catálogo!</small>
+    <br/><br/>
+    <a href="/productos-cliente.html" style="display:inline-flex;align-items:center;gap:6px;
+       padding:10px 20px;background:var(--c-ink);color:var(--c-paper);border-radius:var(--radius-md);
+       font-size:13.5px;font-weight:500;text-decoration:none;">
+      Ver catálogo
+    </a>
+  </div>
+
+</div>
+
+<div id="toast"></div>
+
+<script src="/js/utils.js"></script>
+<script src="/js/mis-pedidos.js"></script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cupones — Panel Admin</title>
+  <link rel="stylesheet" href="/css/global.css"/>
+  <link rel="stylesheet" href="/css/admin-shared.css"/>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="page-header">
+    <div>
+      <h1>Gestión de <em>Cupones</em></h1>
+      <p>Panel de administración · Códigos de descuento y promociones</p>
+    </div>
+    <span style="font-family:var(--font-mono);font-size:12px;padding:5px 12px;
+           background:var(--c-ink);color:var(--c-paper);border-radius:99px;"
+          id="totalBadge">0 cupones</span>
+  </header>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Total cupones</div>
+      <div class="stat-value" id="sTot">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Activos</div>
+      <div class="stat-value" id="sActivos" style="color:var(--c-ok)">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Expirados</div>
+      <div class="stat-value" id="sExp" style="color:var(--c-ink-muted)">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Usos totales</div>
+      <div class="stat-value" id="sUsos">—</div>
+    </div>
+  </div>
+
+  <!-- GRID FORM + TABLA -->
+  <div class="main-grid">
+
+    <!-- FORMULARIO -->
+    <aside>
+      <div class="card">
+        <div class="card-header">
+          <span class="dot" id="formDot"></span>
+          <span class="card-title" id="formTitle">Nuevo Cupón</span>
+        </div>
+
+        <input type="hidden" id="idCupon"/>
+
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Código *</label>
+            <input type="text" id="codigo" placeholder="DESCUENTO10" style="text-transform:uppercase;letter-spacing:.08em;"/>
+          </div>
+          <div class="form-group full">
+            <label>Descripción</label>
+            <input type="text" id="descripcion" placeholder="10% en toda la tienda"/>
+          </div>
+          <div class="form-group">
+            <label>Tipo *</label>
+            <select id="tipo" onchange="actualizarLabelValor()">
+              <option value="PORCENTAJE">Porcentaje (%)</option>
+              <option value="MONTO_FIJO">Monto fijo ($)</option>
+              <option value="ENVIO_GRATIS">Envío gratis</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label id="labelValor">Valor (%) *</label>
+            <input type="number" id="valor" placeholder="10" min="0" step="0.01"/>
+          </div>
+          <div class="form-group">
+            <label>Compra mínima</label>
+            <input type="number" id="minimoCompra" placeholder="0" min="0" step="1000"/>
+          </div>
+          <div class="form-group">
+            <label>Descuento máximo</label>
+            <input type="number" id="maximoDescuento" placeholder="Sin límite" min="0" step="1000"/>
+          </div>
+          <div class="form-group">
+            <label>Usos máximos</label>
+            <input type="number" id="usosMaximos" placeholder="Sin límite" min="1"/>
+          </div>
+          <div class="form-group">
+            <label>Usos por usuario</label>
+            <input type="number" id="usosPorUsuario" placeholder="1" min="1" value="1"/>
+          </div>
+          <div class="form-group full">
+            <label>Vigencia inicio</label>
+            <input type="datetime-local" id="vigenciaInicio"/>
+          </div>
+          <div class="form-group full">
+            <label>Vigencia fin</label>
+            <input type="datetime-local" id="vigenciaFin"/>
+          </div>
+        </div>
+
+        <div style="margin-top:1.25rem;border:1px solid var(--c-border);border-radius:var(--radius-lg);padding:.75rem 1rem;">
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span>Cupón activo</span>
+              <small>Disponible para los clientes</small>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="activo" checked/>
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="guardar()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <span id="btnText">Crear Cupón</span>
+          </button>
+          <button class="btn btn-secondary" id="btnCancelar" onclick="resetForm()" style="display:none">
+            ✕ Cancelar
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- TABLA -->
+    <section>
+      <div class="card">
+        <div class="card-header">
+          <span class="dot green"></span>
+          <span class="card-title">Cupones registrados</span>
+        </div>
+
+        <div class="table-toolbar">
+          <div class="search-wrap">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input class="search-input" id="searchInput" type="text"
+                   placeholder="Buscar por código…" oninput="filtrar()"/>
+          </div>
+          <select id="filtroTipo" onchange="filtrar()"
+                  style="padding:8px 12px;border:1px solid var(--c-border);
+                         border-radius:var(--radius-md);font-family:var(--font-body);
+                         font-size:13.5px;background:var(--c-surface);color:var(--c-ink);outline:none;">
+            <option value="">Todos los tipos</option>
+            <option value="PORCENTAJE">Porcentaje</option>
+            <option value="MONTO_FIJO">Monto fijo</option>
+            <option value="ENVIO_GRATIS">Envío gratis</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+            <tr>
+              <th>Código</th>
+              <th>Tipo</th>
+              <th>Valor</th>
+              <th>Mín. compra</th>
+              <th>Usos</th>
+              <th>Vigencia</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody id="tablaBody">
+            <tr><td colspan="8" style="padding:2rem;text-align:center;color:var(--c-ink-muted)">Cargando…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="empty-state" id="emptyState" style="display:none">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          <p>Sin cupones creados</p>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /main-grid -->
+</div><!-- /app -->
+
+<!-- Modal eliminar -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <h3>Eliminar cupón</h3>
+    <p>¿Deseas eliminar este cupón? Los pedidos que ya lo usaron no se verán afectados.</p>
+    <div class="modal-actions">
+      <button class="btn-cancel-del" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn-confirm-del" onclick="confirmarEliminar()">Sí, eliminar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="/js/utils.js"></script>
+<script src="/js/cupones-admin.js"></script>
+</body>
+</html>

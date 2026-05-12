@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pedidos — Panel Admin</title>
+  <link rel="stylesheet" href="/css/global.css"/>
+  <link rel="stylesheet" href="/css/admin-shared.css"/>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="page-header">
+    <div>
+      <h1>Gestión de <em>Pedidos</em></h1>
+      <p>Panel de administración · Seguimiento y cambio de estado de órdenes</p>
+    </div>
+    <span style="font-family:var(--font-mono);font-size:12px;padding:5px 12px;
+           background:var(--c-ink);color:var(--c-paper);border-radius:99px;"
+          id="totalBadge">0 pedidos</span>
+  </header>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Total pedidos</div>
+      <div class="stat-value" id="sTot">—</div>
+      <div class="stat-sub">todos los estados</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pendientes</div>
+      <div class="stat-value" id="sPend" style="color:var(--c-warn)">—</div>
+      <div class="stat-sub">sin confirmar</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">En proceso</div>
+      <div class="stat-value" id="sProc">—</div>
+      <div class="stat-sub">confirmados + preparación</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Despachados</div>
+      <div class="stat-value" id="sDesp">—</div>
+      <div class="stat-sub">en camino</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Entregados</div>
+      <div class="stat-value" id="sEntregados" style="color:var(--c-ok)">—</div>
+      <div class="stat-sub">completados</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Recaudado</div>
+      <div class="stat-value" id="sTotal" style="font-size:1.3rem">—</div>
+      <div class="stat-sub">pedidos entregados</div>
+    </div>
+  </div>
+
+  <!-- TABLA PRINCIPAL -->
+  <div class="card">
+    <div class="card-header">
+      <span class="dot green"></span>
+      <span class="card-title">Órdenes registradas</span>
+    </div>
+
+    <div class="table-toolbar">
+      <div class="search-wrap">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="search-input" id="searchInput" type="text"
+               placeholder="Buscar por N° orden o usuario…" oninput="filtrar()"/>
+      </div>
+      <select id="filtroEstado" onchange="filtrar()"
+              style="padding:8px 12px;border:1px solid var(--c-border);
+                     border-radius:var(--radius-md);font-family:var(--font-body);
+                     font-size:13.5px;background:var(--c-surface);color:var(--c-ink);outline:none;">
+        <option value="">Todos los estados</option>
+        <option value="PENDIENTE">Pendiente</option>
+        <option value="CONFIRMADO">Confirmado</option>
+        <option value="EN_PREPARACION">En preparación</option>
+        <option value="DESPACHADO">Despachado</option>
+        <option value="ENTREGADO">Entregado</option>
+        <option value="CANCELADO">Cancelado</option>
+        <option value="REEMBOLSADO">Reembolsado</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>N° Orden</th>
+          <th>Usuario</th>
+          <th>Fecha</th>
+          <th>Subtotal</th>
+          <th>Descuento</th>
+          <th>Total</th>
+          <th>Estado</th>
+          <th>Cambiar estado</th>
+          <th>Detalle</th>
+        </tr>
+        </thead>
+        <tbody id="tablaBody">
+        <tr><td colspan="9" style="padding:2rem;text-align:center;color:var(--c-ink-muted)">Cargando…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="empty-state" id="emptyState" style="display:none">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
+      <p>No hay pedidos registrados</p>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- ── DRAWER DETALLE ─────────────────────────────────────────────────────── -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="cerrarDrawer()"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div>
+      <h3 id="drawerTitle">Detalle del pedido</h3>
+      <p  id="drawerSub">—</p>
+    </div>
+    <button class="drawer-close" onclick="cerrarDrawer()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body" id="drawerBody">
+    <!-- Contenido dinámico -->
+  </div>
+</aside>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script src="/js/utils.js"></script>
+<script src="/js/pedidos-admin.js"></script>
+</body>
+</html>
